@@ -124,12 +124,11 @@ jobs:
           command: |
             aws cloudformation \
             list-exports --query "Exports[?Name==\`Public IPv4 address\`].Value" \
-            --no-paginate --output text >> CICD_final_project/.circleci/ansible/inventory.txt
-            exit 1
+            --no-paginate --output text >> ~/.circleci/ansible/inventory.txt
       - persist_to_workspace:
           root: ~/
           paths:
-            - CICD_final_project/.circleci/ansible/inventory.txt
+            - /.circleci/ansible/inventory.txt
       - destroy-environment             
             
 workflows:

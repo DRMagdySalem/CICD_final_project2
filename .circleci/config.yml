@@ -129,11 +129,32 @@ jobs:
            # list-exports --query "Exports[?Name==\`Public IPv4 address\`].Value" \
            # --no-paginate --output text >> CICD_final_project/.circleci/ansible/inventory.txt
            
-      - persist_to_workspace:
-          root: ~/
-          paths:
-            - CICD_final_project/.circleci/ansible/inventory.txt
-      - destroy-environment             
+     # - persist_to_workspace:
+      #    root: .circleci/ansible
+       #   paths:
+        #    - inventory.txt
+      - destroy-environment    
+
+    configure-infrastructure:
+    docker:
+      - image : python:3.7-alpine3.11
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints: ["f1:c0:45:fb:ac:eb:c4:73:19:c0:e8:07:bb:f5:96:5b"]
+      # attach workspace
+      - run:
+          name: Install dependencies
+          command: |
+            # Your code here
+            exit 1
+      - run:
+          name: Configure server
+          command: |
+            # Your code here
+            exit 1
+      # Here's where you will add some code to rollback on failure      
+             
             
 workflows:
   default:

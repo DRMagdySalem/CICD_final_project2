@@ -125,12 +125,34 @@ jobs:
             aws ec2 describe-instances --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
             --query "Reservations[].Instances[].PublicIpAddress" \
             --no-paginate --output text >> .circleci/ansible/inventory.txt
-      - run: echo "hellooo" >>   .circleci/ansible/inventory.txt    
+      #- run: echo "hellooo" >>   .circleci/ansible/inventory.txt    
       - persist_to_workspace:
           root: .circleci/ansible
           paths:
             - inventory.txt
       - destroy-environment    
+
+  configure-infrastructure:
+    docker:
+      - image : python:3.7-alpine3.11
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints: ["f1:c0:45:fb:ac:eb:c4:73:19:c0:e8:07:bb:f5:96:5b"]
+      - attach_workspace:
+          at: .circleci/ansible
+      - run:
+          name: Install dependencies
+          command: |
+            yum install -y tar gzip
+            apk add --update ansible 
+      - run:
+          name: Configure server
+          command: |
+            cd .circleci/ansible
+            ansible-playbook -i inventory.txt configure-server.yml
+      # Here's where you will add some code to rollback on failure   
+      - destroy environment   
 
  
              
@@ -148,4 +170,6 @@ workflows:
           requires: [build-frontend]    
       - scan-backend:
           requires: [build-backend]
-      - deploy-infrastructure   
+      - deploy-infrastructure  
+      - configure-infrastructure: 
+          requires: [deploy-infrastructure]

@@ -127,12 +127,12 @@ jobs:
             --no-paginate --output text >> inventory.txt
           #  aws cloudformation \
            # list-exports --query "Exports[?Name==\`Public IPv4 address\`].Value" \
-           # --no-paginate --output text >> ~/inventory.txt
+           # --no-paginate --output text >> /.circleci/ansible/inventory.txt
            
-      - persist_to_workspace:
-          root: ~/
-          paths:
-            - /.circleci/ansible/textfile.txt 
+     # - persist_to_workspace:
+      #    root: ~/
+       #   paths:
+        #    - /.circleci/ansible/textfile.txt 
       - destroy-environment             
             
 workflows:

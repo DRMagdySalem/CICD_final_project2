@@ -15,7 +15,7 @@
   pre_tasks:
     - name: "wait 150 seconds for target connection to become reachable/usable."
       ansible.builtin.wait_for_connection:
-        timeout: 200
+        timeout: 150
     
     - name: "update apt packages."
       become: yes

@@ -57,7 +57,7 @@
       become: true
 
     - name: Install python
-      apt: name="python{{ python_version }}-dev" state=present
+      apt: name="python3-dev" state=present
       become: true
       
 

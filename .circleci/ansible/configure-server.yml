@@ -47,18 +47,6 @@
         global: yes
         production: yes
         state: present
-
-    - name: Install prerequisites
-      apt: name=python-software-properties state=present
-      become: true
-
-    - name: Add deadsnakes repo
-      apt_repository: repo="ppa:deadsnakes/ppa"
-      become: true
-
-    - name: Install python
-      apt: name="python3-dev" state=present
-      become: true
       
 
   # Get the environment variables from CircleCI and add to the EC2 instance

@@ -169,7 +169,7 @@ jobs:
           name: Run migrations
           command: |
             cd backend
-            npm cache clean 
+            npm cache clean --force
             npm install
             npm run migrations > migrations_dump.txt
       #- run:
@@ -226,20 +226,20 @@ jobs:
 workflows:
   default:
     jobs:
-      - build-frontend
-      - build-backend
-      - test-frontend :
-          requires: [build-frontend]
-      - test-backend :
-          requires: [build-backend]
-      - scan-frontend:
-          requires: [build-frontend]    
-      - scan-backend:
-          requires: [build-backend]
-      - deploy-infrastructure
-      - configure-infrastructure:
-          requires: [deploy-infrastructure]
+    #  - build-frontend
+   #   - build-backend
+   #   - test-frontend :
+   #       requires: [build-frontend]
+ #     - test-backend :
+   #       requires: [build-backend]
+  #    - scan-frontend:
+    #      requires: [build-frontend]    
+    #  - scan-backend:
+  #        requires: [build-backend]
+   #   - deploy-infrastructure
+    #  - configure-infrastructure:
+     #     requires: [deploy-infrastructure]
       - run-migrations:
-          requires: [configure-infrastructure]
-      - deploy-frontend:
-          requires: [run-migrations]    
+          #requires: [configure-infrastructure]
+    #  - deploy-frontend:
+    #      requires: [run-migrations]    

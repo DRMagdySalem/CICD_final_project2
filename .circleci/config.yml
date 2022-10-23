@@ -287,7 +287,7 @@ jobs:
             unzip awscli-bundle.zip
             ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
       - run:
-          name: Get backend url
+          name: Get backend url & backend smoke test
           command: |
             export BACKEND_IP=$(aws ec2 describe-instances  \
             --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
@@ -295,9 +295,6 @@ jobs:
             --no-paginate --output text )
             export API_URL="http://${BACKEND_IP}:3030"
             echo "${API_URL}"
-      - run:
-          name: Backend smoke test.
-          command: |
             if curl "${API_URL}/api/status" | grep "ok"
             then
                 return 0

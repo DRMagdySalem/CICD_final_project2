@@ -174,13 +174,14 @@ jobs:
             npm install
             npm run migrations > migrations_dump.txt
       - run:
-          if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
-          then
-              echo "yes" > ~/mig.txt
-          else
-              echo "no"  > ~/mig.txt  
-          fi
-          cat ~/mig.txt    
+          command: |
+            if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
+            then
+                echo "yes" > ~/mig.txt
+            else
+                echo "no"  > ~/mig.txt  
+            fi
+            cat ~/mig.txt    
       - persist_to_workspace:
           root: ~/
           paths:

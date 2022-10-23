@@ -189,13 +189,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apk add --update tar
-            apk add --update gzip
-            apk add --update ansible 
-            apk add python curl
-            curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
-            unzip awscli-bundle.zip
-            ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
+            yum install -y tar gzip
       - attach_workspace:
           at: .circleci/ansible     
       - run:
@@ -233,6 +227,7 @@ jobs:
             apk add --update gzip
             apk add --update ansible 
             apk add python curl
+            npm install
             curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
             unzip awscli-bundle.zip
             ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
@@ -240,7 +235,6 @@ jobs:
           name: Deploy backend
           command: |
             cd backend
-            npm install
             npm i
             npm run build
             cd ..
@@ -312,9 +306,9 @@ workflows:
           requires: [deploy-infrastructure]
       - run-migrations:
           requires: [configure-infrastructure]
-      #- deploy-frontend
-        #  requires: [run-migrations] 
-    #  - deploy-backend
-       #   requires: [run-migrations]
-     # - smoke-test:
-      #    requires: [deploy-backend, deploy-frontend]   
+      - deploy-frontend:
+          requires: [run-migrations] 
+      - deploy-backend:
+          requires: [run-migrations]
+      - smoke-test:
+          requires: [deploy-backend, deploy-frontend]   

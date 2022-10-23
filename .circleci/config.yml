@@ -119,7 +119,7 @@ jobs:
               --tags project=udapeople \
                --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
                --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" 
-      - run : sleep 70          
+      - run : sleep 50          
       - run:
           name: Add back-end ip to ansible inventory
           command: |
@@ -204,7 +204,7 @@ jobs:
           name: Get backend url
           command: |
             export BACKEND_IP=$(aws ec2 describe-instances  \
-            --query "Reservations[].Instances[].PublicDnsName" \
+            --query "Reservations[].Instances[].PublicIpAddress" \
             --no-paginate --output text )
             export API_URL="http://${BACKEND_IP}:3030"
             echo "API_URL = ${API_URL}"
@@ -272,6 +272,9 @@ jobs:
       - run:
           name: Get backend url
           command: |
+            export BACKEND_IP=$(aws ec2 describe-instances  \
+            --query "Reservations[].Instances[].PublicIpAddress" \
+            --no-paginate --output text )
             export API_URL="http://${BACKEND_IP}:3030"
             echo "${API_URL}"
       - run:

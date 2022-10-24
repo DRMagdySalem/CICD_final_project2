@@ -19,11 +19,11 @@ commands:
       #  workflow_id:
         #    type: string     
     steps:
+      - attach_workspace:
+          at: ~/
       - run:
           name: Revert migrations
-          when: on_fail
-      - attach_workspace:
-          at: ~/    
+          when: on_fail    
           command: |
             cat mig.txt
             if grep yes mig.txt 

@@ -1,0 +1,17 @@
+---
+- name: Copying files
+  become: true
+  copy:
+    src: artifact.tar.gz
+    dest: /home/ubuntu/artifact.tar.gz
+
+- name: launch PM2
+  shell: |
+    cd /home/ubuntu/
+    tar xzvf artifact.tar.gz
+    cd backend
+    sudo npm install -g npm@latest
+    sudo npm install -g webpack-dev-server
+    sudo npm install
+    sudo npm run build
+    sudo pm2 start npm --name backend -- start

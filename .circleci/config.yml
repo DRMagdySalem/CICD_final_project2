@@ -18,14 +18,11 @@ commands:
       #  workflow_id:
         #    type: string     
     steps:
-      - attach_workspace:
-          at: .circleci
       - run:
           name: Revert migrations
           when: on_fail    
           command: |
-            cat mig.txt 
-            if grep yes mig.txt 
+            if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
                 cd ~/project/backend
                 npm install
@@ -195,27 +192,6 @@ jobs:
             npm install
             npm run migrations > migrations_dump.txt
             cat migrations_dump.txt
-      - run:
-          command: |
-            if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
-            then
-                echo "yes" > .circleci/mig.txt
-            else
-                echo "no"  > .circleci/mig.txt 
-            fi
-            cat .circleci/mig.txt    
-      - persist_to_workspace:
-          root: .circleci
-          paths:
-            - mig.txt   
-       
-       
-       #   name: Send migration results to memstash
-        #  command: |
-         #  then
-          #  curl -H "Content-Type: text/plain" -H "token: 7933fe63-4687-4fa1-8426-aa25aa1730ec" --request PUT --data "1" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}
-           # exit 1
-     # Here's where you will add some code to rollback on failure
 
   deploy-frontend:
     docker:
@@ -298,7 +274,7 @@ jobs:
     docker:
       - image : python:3.7-alpine3.11 
     steps:
-      - checkout         
+      - checkout           
       - run:
           name: Install dependencies
           command: |
@@ -336,7 +312,7 @@ jobs:
               return 1  
             fi  
   
-     # - destroy-environment
+      - destroy-environment
       - revert-migrations    
 
       

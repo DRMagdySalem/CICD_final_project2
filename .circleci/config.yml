@@ -364,7 +364,7 @@ jobs:
           name: Get old stack workflow id
           command: |
             cat .circleci/ansible/OldWorkflowID.txt 
-            OldWorkflowID=$(cat OldWorkflowID.txt)
+            OldWorkflowID=$(cat .circleci/ansible/OldWorkflowID.txt)
             echo OldWorkflowID: "${OldWorkflowID}"
             
 

@@ -339,7 +339,7 @@ jobs:
 
             aws cloudformation deploy \
                 --template-file .circleci/files/cloudfront.yml \
-                --stack-name initialstacks-${CIRCLE_WORKFLOW_ID:0:7} \
+                --stack-name initialstack-${CIRCLE_WORKFLOW_ID:0:7} \
                 --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" \
 
             echo OldWorkflowID: "${OldWorkflowID}"
@@ -377,28 +377,28 @@ jobs:
 workflows:
   default:
     jobs:
-      - build-frontend
-      - build-backend
-      - test-frontend :
-          requires: [build-frontend]
-      - test-backend :
-          requires: [build-backend]
-      - scan-frontend:
-          requires: [build-frontend]    
-      - scan-backend:
-          requires: [build-backend]
-      - deploy-infrastructure
-      - configure-infrastructure:
-          requires: [deploy-infrastructure]
-      - run-migrations:
-          requires: [configure-infrastructure]
-      - deploy-frontend:
-          requires: [run-migrations] 
-      - deploy-backend:
-          requires: [run-migrations]
-      - smoke-test:
-          requires: [deploy-backend, deploy-frontend]  
-      - cloudfront-update:   
-          requires: [smoke-test]   
+     # - build-frontend
+     # - build-backend
+      #- test-frontend :
+      #    requires: [build-frontend]
+      #- test-backend :
+     #     requires: [build-backend]
+     # - scan-frontend:
+     #     requires: [build-frontend]    
+     # - scan-backend:
+     #     requires: [build-backend]
+     # - deploy-infrastructure
+     # - configure-infrastructure:
+     #     requires: [deploy-infrastructure]
+     # - run-migrations:
+    #      requires: [configure-infrastructure]
+      #- deploy-frontend:
+      #    requires: [run-migrations] 
+     # - deploy-backend:
+     #     requires: [run-migrations]
+     # - smoke-test:
+     #     requires: [deploy-backend, deploy-frontend]  
+      - cloudfront-update   
+     #     requires: [smoke-test]   
       - cleanup:
           requires: [cloudfront-update]     

@@ -19,14 +19,14 @@ commands:
         #    type: string     
     steps:
       - attach_workspace:
-          at: .circleci/ansible
+          at: backend
       - run:
           name: Revert migrations
           when: on_fail    
           command: |
-            if grep -q "has been executed successfully." .circleci/ansible/migrations_dump.txt
+            if grep -q "has been executed successfully." backend/migrations_dump.txt
             then
-                cd ~/project/backend
+                cd backend
                 npm install
                 npm run migration:revert
             fi                     
@@ -191,10 +191,10 @@ jobs:
           command: |
             cd backend
             npm install
-            npm run migrations > .circleci/ansible/migrations_dump.txt
-            cat .circleci/ansible/migrations_dump.txt
+            npm run migrations > migrations_dump.txt
+            cat migrations_dump.txt
       - persist_to_workspace:
-          root: .circleci/ansible
+          root: backend
           paths:
             - migrations_dump.txt     
 

@@ -391,7 +391,7 @@ workflows:
       - deploy-infrastructure:
           filters:
             branches:
-              only: [test-feature-branch]
+              only: [pre-deployment]
       - configure-infrastructure:
           requires: [deploy-infrastructure]
       - run-migrations:

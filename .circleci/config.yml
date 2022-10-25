@@ -19,12 +19,12 @@ commands:
         #    type: string     
     steps:
       - attach_workspace:
-          at: backend
+          at: .circleci/ansible
       - run:
           name: Revert migrations
           when: on_fail    
           command: |
-            if grep -q "has been executed successfully." backend/migrations_dump.txt
+            if grep -q "has been executed successfully." .circleci/ansible/migrations_dump.txt
             then
                 cd ~/project/backend
                 npm install
@@ -115,6 +115,7 @@ jobs:
             npm audit fix --audit-level=critical --force
             npm audit fix --force
             npm audit --audit-level=critical
+            npm audit fix
   deploy-infrastructure:
     docker:
       - image : amazon/aws-cli
@@ -151,7 +152,7 @@ jobs:
           root: .circleci/ansible
           paths:
             - inventory.txt
-     # - destroy-environment    
+      - destroy-environment    
 
   configure-infrastructure:
     docker:
@@ -178,7 +179,7 @@ jobs:
             cd .circleci/ansible
             ansible-playbook -i inventory.txt configure-server.yml
       # Here's where you will add some code to rollback on failure   
-      #- destroy-environment   
+      - destroy-environment   
   
   run-migrations:
     docker:
@@ -191,13 +192,17 @@ jobs:
           name: Run migrations
           command: |
             cd backend
+            npm audit fix --audit-level=critical --force
+            npm audit fix --force
+            npm audit --audit-level=critical
+            npm audit fix
             npm install
-            npm run migrations > migrations_dump.txt
-            cat migrations_dump.txt
+            npm run migrations > .circleci/ansible/migrations_dump.txt
+            cat .circleci/ansible/migrations_dump.txt
       - persist_to_workspace:
-          root: backend
+          root: .circleci/ansible
           paths:
-            - migrations_dump.txt      
+            - migrations_dump.txt     
 
   deploy-frontend:
     docker:
@@ -237,7 +242,7 @@ jobs:
             npm run build
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
-     # - destroy-environment   
+      - destroy-environment   
   deploy-backend:
     docker:
       - image : python:3.7-alpine3.11
@@ -275,7 +280,7 @@ jobs:
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml
 
-      #- destroy-environment
+      - destroy-environment
   smoke-test:
     docker:
       - image : python:3.7-alpine3.11 
@@ -313,7 +318,7 @@ jobs:
             echo ${URL} 
             if curl -s ${URL} | grep "Welcome"
             then
-              return 0
+              return 1
             else
               return 1  
             fi  

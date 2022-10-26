@@ -19,12 +19,12 @@ commands:
         #    type: string     
     steps:
       - attach_workspace:
-          at: backend
+          at: ~/project/backend
       - run:
           name: Revert migrations
           when: on_fail    
           command: |
-            if grep -q "has been executed successfully." backend/migrations_dump.txt
+            if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
                 cd backend
                 npm install
@@ -192,9 +192,10 @@ jobs:
             cd backend
             npm install
             npm run migrations > migrations_dump.txt
+            echo "contents of migrations_dumpt.txt"
             cat migrations_dump.txt
       - persist_to_workspace:
-          root: backend
+          root: ~/project/backend
           paths:
             - migrations_dump.txt     
 
